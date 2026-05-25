@@ -100,13 +100,24 @@ class NeuronLayer:
 
         return stimulus_vector
     
-    def pre_activation_boost(self, source:str):
-        for target in self.clusters:
-            if(source != target):
-                synaptice_weight = self.synaptic_weights[(source, target)]
-                boost = synaptice_weight.weight * self.clusters[source].current_signal
-                self.clusters[target].current_signal += boost * (1 - self.clusters[target].current_signal)
-                self.clusters[target].current_signal = min(self.clusters[target].current_signal, 1)
+    def pre_activation_boost(self):
+        pending_boost_signals = {
+            name: 0.0
+            for name in self.clusters
+        }
+        for source in self.clusters:
+            source_signal = self.clusters[source].current_signal
+            for target in self.clusters:
+                if(source != target):
+                    synaptice_weight = self.synaptic_weights[(source, target)]
+                    boost = synaptice_weight.weight * source_signal
+                    pending_boost_signals[target] += boost
+        
+        for cluster_name, boosted_signal in pending_boost_signals.items():
+            current_signal = self.clusters[cluster_name].current_signal
+            new_signal = current_signal + (boosted_signal * (1 - current_signal))
+            self.clusters[cluster_name].current_signal = min(new_signal, 1)
+
 
 
     def decay(self):
