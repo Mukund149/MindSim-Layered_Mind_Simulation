@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from typing import Optional
 from Model.sentence_transformer import model, REFERENCE_VECTORS
 from sklearn.metrics.pairwise import cosine_similarity
+from Simulation.TimeSimulations import Mind_clock
 
 @dataclass
 class NeuronCluster : 
@@ -12,14 +13,14 @@ class NeuronCluster :
     refractory_timer: float = 2.0
     current_signal: float = 0.0
     decay_rate: float = 0.05 
-    last_fired: Optional[datetime] = None
+    last_fired: Optional[Mind_clock] = None
     is_fired: bool = False
 
 @dataclass
 class SynapticWeights :
     source_cluster : str
     target_cluster : str
-    weight: float = 0.2
+    weight: float = 0.0
     co_activation_count: int = 0
     decay: float = 0.01
     last_strengthened: Optional[datetime] = None
@@ -27,10 +28,12 @@ class SynapticWeights :
 class NeuronLayer:
 
     MAX_SEMANTIC_RANGE = 0.75
-    activation_map = {}
     LEARNING_RATE = 0.05
+    mind_time = Mind_clock() 
 
     def __init__(self):
+        self.activation_map = {}
+        self.Full_activation_map = {}
         self.clusters = {
 
             "threat": NeuronCluster(
@@ -95,19 +98,28 @@ class NeuronLayer:
             new_signal = current_signal + (scaled_score * (1 - current_signal))
             self.clusters[cluster_name].current_signal = min(new_signal, 1)
 
-        for cluster_name in self.clusters:
-            self.pre_activation_boost(cluster_name)
+        self.pre_activation_boost()
 
         return stimulus_vector
     
-    def pre_activation_boost(self, source:str):
-        for target in self.clusters:
-            if(source != target):
-                synaptice_weight = self.synaptic_weights[(source, target)]
-                boost = synaptice_weight.weight * self.clusters[source].current_signal
-                self.clusters[target].current_signal += boost * (1 - self.clusters[target].current_signal)
-                self.clusters[target].current_signal = min(self.clusters[target].current_signal, 1)
-
+    def pre_activation_boost(self):
+        pending_boost_signals = {
+            name: 0.0
+            for name in self.clusters
+        }
+        for source in self.clusters:
+            source_signal = self.clusters[source].current_signal
+            for target in self.clusters:
+                if(source != target):
+                    synaptice_weight = self.synaptic_weights[(source, target)]
+                    boost = synaptice_weight.weight * source_signal
+                    pending_boost_signals[target] += boost * (1 - pending_boost_signals[target])
+                    pending_boost_signals[target] = min(pending_boost_signals[target], 1.0)
+        
+        for cluster_name, boosted_signal in pending_boost_signals.items():
+            current_signal = self.clusters[cluster_name].current_signal
+            new_signal = current_signal + (boosted_signal * (1 - current_signal))
+            self.clusters[cluster_name].current_signal = min(new_signal, 1)
 
     def decay(self):
         for cluster in self.clusters.values():
@@ -122,30 +134,35 @@ class NeuronLayer:
             if cluster.last_fired == None:
                 if cluster.current_signal >= cluster.threshold:
                     cluster.is_fired = True
-                    cluster.last_fired = datetime.now()
+                    cluster.last_fired = self.mind_time.now()
                     self.activation_map[cluster.type] = cluster.current_signal
 
             else:
-                time_since_fired = datetime.now() - cluster.last_fired
+                time_since_fired = self.mind_time.now() - cluster.last_fired
                 seconds_since_fired = time_since_fired.total_seconds()
                 if cluster.current_signal >= cluster.threshold and seconds_since_fired > cluster.refractory_timer:
                     cluster.is_fired = True
-                    cluster.last_fired = datetime.now()
+                    cluster.last_fired = self.mind_time.now()
                     self.activation_map[cluster.type] = cluster.current_signal
         
-        return self.activation_map
+        self.Full_activation_map = {
+                cluster_name:cluster.current_signal
+                for cluster_name, cluster in self.clusters.items()
+            }
+        return self.Full_activation_map
     
-    def hebbian_strengthening(self, source:str):
-        for target in self.activation_map:
-            if(source != target):
-                synaptic = self.synaptic_weights[(source, target)]
-                synaptic.weight +=  self.LEARNING_RATE * (1 - synaptic.weight)
-                synaptic.co_activation_count += 1
-                synaptic.last_strengthened = datetime.now()
-                self.synaptic_weights[(source, target)].weight = min(synaptic.weight, 1)
+    def hebbian_strengthening(self):
+        for source in self.activation_map:
+            for target in self.activation_map:
+                if(source != target):
+                    synaptic = self.synaptic_weights[(source, target)]
+                    synaptic.weight +=  self.LEARNING_RATE * (1 - synaptic.weight)
+                    synaptic.co_activation_count += 1
+                    synaptic.last_strengthened = self.mind_time.now()
+                    self.synaptic_weights[(source, target)].weight = min(synaptic.weight, 1)
 
     def hebbian_decay(self):
-        now = datetime.now()
+        now = self.mind_time.now()
 
         for synaptic in self.synaptic_weights.values():
             if(synaptic.last_strengthened == None):
