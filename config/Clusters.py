@@ -1,15 +1,28 @@
 CLUSTER_REFERENCES = {
     "threat": [
-        "something bad is going to happen to me",
-        "I might lose something important",
-        "there is a real chance this goes wrong for me",
-        "I could get hurt or harmed by this",
-        "this situation could end badly",
-        "I am at risk of failing or losing here",
-        "something is working against me in this situation",
-        "the outcome here could seriously damage me",
-        "I might not be safe in this situation",
-        "there is a genuine danger present here"
+        ## LOSS
+        "something valuable may be lost",
+        "important things feel vulnerable to loss",
+        "there is a possibility of losing something that matters"
+
+        ## VULNERABILITY
+        "there is no protection from what could go wrong here",
+        "there is no defense against what might happen",
+        "important things are currently vulnerable"
+
+        ## DANGER
+        "the situation contains conditions that could cause damage",
+        "the situation contains elements of danger",
+        "there is a real chance of harm in this stituation"
+
+        ## NEGATIVE CONSEQUENCES
+        "this could lead to serious problems",
+        "the situation may produce damaging consequences",
+        "important outcomes could be negatively affected"
+
+        ## INSTABLITY
+        "something important may no longer remain intact"
+        "something significant feels at risk of disruption"
     ],
 
     "reward": [
@@ -39,16 +52,16 @@ CLUSTER_REFERENCES = {
     ],
 
     "familiarity": [
-        "I have been through something like this before",
-        "this feels like a situation I already know how to handle",
-        "I recognize this pattern from past experience",
-        "this is the kind of thing that happens regularly in my life",
-        "I know exactly what this situation is about",
-        "this is nothing new or surprising to me",
-        "I have dealt with this type of situation many times",
-        "this follows a pattern I am completely used to",
-        "there is nothing here I have not seen before",
-        "this feels routine and expected"
+        "this is a completely normal and routine situation for me",
+        "nothing here is surprising or unexpected",
+        "this is exactly what I expected to happen",
+        "this follows my usual daily routine",
+        "I have been through this exact kind of situation before and know what to expect",
+        "this is a regular and predictable part of my life",
+        "the outcome of this situation feels largely predictable",
+        "this is the same as it always is",
+        "I could have predicted this would happen",
+        "this situation follows a pattern I already understand"
     ],
 
     "urgency": [
@@ -89,22 +102,20 @@ CLUSTER_REFERENCES = {
         "this concerns my place within a group or community",
         "someone else's behavior is central to this situation",
         "what I do here will be noticed by other people",
-        "this situation involves interaction between people",
+        "how I am being judged or evaluated by others is important here",
         "how others respond to this is an important part of the situation"
     ],
 
     "affinity": [
-        "this involves someone I genuinely care about",
-        "something that matters deeply to me is at stake here",
-        "this is personally meaningful to me in a significant way",
-        "I have a strong personal connection to what is happening",
-        "this touches something that is very close to me",
-        "the person involved in this situation is important to me",
-        "I have a deep personal investment in this situation",
-        "this is not distant or abstract — it directly involves my life",
-        "what happens here matters to me on a personal level",
-        "this involves something or someone I hold close",
-        "I feel strongly connected to this",
-        "this situation affects something important to my identity"
+        "this involves someone I love or deeply care about",
+        "this person is someone I am closely bonded with",
+        "I have a strong emotional attachment to this person",
+        "this involves a relationship that is precious to me",
+        "someone I trust deeply is part of this situation",
+        "this affects someone I feel emotionally close to",
+        "I feel genuine warmth and closeness toward this person",
+        "this involves a friendship or bond that matters to me",
+        "someone I care about is directly involved here",
+        "this touches my relationship with someone I love"
     ]
 }

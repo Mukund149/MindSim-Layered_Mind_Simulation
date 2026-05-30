@@ -1,8 +1,8 @@
 NEURON_EMOTION_MAPPING = {
     "threat": {
-        "fear": 0.55,
-        "anger": 0.20,
-        "disgust": 0.15,
+        "fear": 0.45, ## DROPPED FROM .55 - .45
+        "anger": 0.35, ## RAISED FROM 0.20 - 0.35
+        "disgust": 0.10,
         "surprise": 0.10
     },
     "reward": {
@@ -18,29 +18,31 @@ NEURON_EMOTION_MAPPING = {
     },
     "novelty": {
         "surprise": 0.50,
-        "anticipation": 0.30,
-        "fear": 0.20
+        "anticipation": 0.40,
+        "fear": 0.10 ## DROPPED FROM 0.20 - 0.10
     },
     "familiarity": {
         "trust": 0.70,
         "joy": 0.30
     },
     "social_relevance": {
-        "trust": 0.35,
-        "anticipation": 0.25,
-        "fear": 0.25,
-        "joy": 0.15
+        "anticipation": 0.35, ## 0.25 - 0.35
+        "surprise": 0.25, ## added 
+        "trust": 0.10, ## 0.35 - 0.1
+        "fear": 0.20, ## 0.25 - 0.20
+        "joy": 0.10 ## 0.15 - 0.10
     },
     "affinity": {
-        "trust": 0.40,
-        "joy": 0.30,
-        "fear": 0.15,
+        "trust": 0.40, ## DROPPED FROM 0.4 - 0.35
+        "joy": 0.25, ## 0.3 - 0.25
+        "fear": 0.10,  ## 0.15 - 0.10
+        "sadness": 0.10, ## added sadness
         "anticipation": 0.15
     },
     "discomfort": {
-        "sadness": 0.35,
+        "sadness": 0.30,
         "disgust": 0.30,
-        "anger": 0.20,
+        "anger": 0.25, ## RAISD FROM 0.20 - 0.35
         "fear": 0.15
     }
 }

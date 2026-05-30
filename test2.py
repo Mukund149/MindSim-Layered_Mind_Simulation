@@ -6,6 +6,12 @@ engine = SimulationEngine()
 
 engine.start()
 
+testings = ["I heard footsteps behind me in the dark and suddenly realized someone was following me", 
+            "Someone publicly humiliated me and I could not defend myself",
+            "Someone deliberately destroyed months of my hard work out of jealousy",
+            "A dangerous person cornered me and I knew I had to fight back immediately"
+    ]
+
 print("\nMindSim Runtime Started")
 print("Type 'exit' to stop the simulation.\n")
 
@@ -77,6 +83,13 @@ try:
 
         for emotion, data in engine.mind_state.activation_map.items():
             print(f"{emotion} : {data} : {engine.neuron_layer.clusters[emotion].last_fired}")
+        
+        print("\nHebbian Synaptics")
+
+        for pair, data in engine.neuron_layer.synaptic_weights.items():
+            strength = data.weight
+            if strength > 0:
+                print(f"{pair} : {strength}")
 
         print("\n===================================\n")
 

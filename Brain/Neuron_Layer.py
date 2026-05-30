@@ -13,7 +13,7 @@ class NeuronCluster :
     refractory_timer: float = 2.0
     current_signal: float = 0.0
     decay_rate: float = 0.05 
-    last_fired: Optional[Mind_clock] = None
+    last_fired: Optional[datetime] = None
     is_fired: bool = False
 
 @dataclass
@@ -23,15 +23,16 @@ class SynapticWeights :
     weight: float = 0.0
     co_activation_count: int = 0
     decay: float = 0.01
+    streak: int = 0
     last_strengthened: Optional[datetime] = None
 
 class NeuronLayer:
 
     MAX_SEMANTIC_RANGE = 0.75
-    LEARNING_RATE = 0.05
-    mind_time = Mind_clock() 
+    LEARNING_RATE = 0.01
 
     def __init__(self):
+        self.mind_time = Mind_clock() 
         self.activation_map = {}
         self.Full_activation_map = {}
         self.clusters = {
@@ -134,32 +135,37 @@ class NeuronLayer:
             if cluster.last_fired == None:
                 if cluster.current_signal >= cluster.threshold:
                     cluster.is_fired = True
-                    cluster.last_fired = self.mind_time.now()
+                    cluster.last_fired = datetime.now()
                     self.activation_map[cluster.type] = cluster.current_signal
 
             else:
-                time_since_fired = self.mind_time.now() - cluster.last_fired
+                time_since_fired = datetime.now() - cluster.last_fired
                 seconds_since_fired = time_since_fired.total_seconds()
                 if cluster.current_signal >= cluster.threshold and seconds_since_fired > cluster.refractory_timer:
                     cluster.is_fired = True
-                    cluster.last_fired = self.mind_time.now()
+                    cluster.last_fired = datetime.now()
                     self.activation_map[cluster.type] = cluster.current_signal
         
-        self.Full_activation_map = {
-                cluster_name:cluster.current_signal
-                for cluster_name, cluster in self.clusters.items()
-            }
-        return self.Full_activation_map
+        return self.activation_map 
     
     def hebbian_strengthening(self):
         for source in self.activation_map:
-            for target in self.activation_map:
+            for target in self.clusters.keys():
                 if(source != target):
                     synaptic = self.synaptic_weights[(source, target)]
-                    synaptic.weight +=  self.LEARNING_RATE * (1 - synaptic.weight)
-                    synaptic.co_activation_count += 1
-                    synaptic.last_strengthened = self.mind_time.now()
-                    self.synaptic_weights[(source, target)].weight = min(synaptic.weight, 1)
+                    if target in self.activation_map:
+                        synaptic.co_activation_count += 1
+                        synaptic.streak += 1
+                    else:
+                        synaptic.streak = max(0, synaptic.streak - 1)
+                        continue
+                    
+                    required_streak = max(1, int(5 * (1 - synaptic.weight)))
+                    if(synaptic.streak >= required_streak):
+                        synaptic.weight +=  self.LEARNING_RATE * (1 - synaptic.weight)
+                        self.synaptic_weights[(source, target)].weight = min(synaptic.weight, 1)
+                        synaptic.last_strengthened = self.mind_time.now()
+                        synaptic.streak = 0
 
     def hebbian_decay(self):
         now = self.mind_time.now()
