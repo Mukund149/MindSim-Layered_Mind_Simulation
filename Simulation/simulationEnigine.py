@@ -1,6 +1,7 @@
 from Brain.Emotion_layer import EmotionLayer
 from Brain.Neuron_Layer import NeuronLayer
 from Simulation.mind_state import MindState
+from Brain.Memory_layer import MemoryLayer
 import threading
 import time
 
@@ -22,10 +23,12 @@ class SimulationEngine:
         self.mind_state = MindState()
         self.neuron_layer: NeuronLayer = NeuronLayer()
         self.emotion_layer = EmotionLayer(self.mind_state)
+        self.memory_layer = MemoryLayer(self.mind_state)
 
     def process_stimulus(self, stimulus):
         self.mind_state.current_stimulus = stimulus
         stimulus_vector = self.neuron_layer.process_stimulus(stimulus)
+        memory_data = (self.memory_layer.memory_retrieval_pipeline(stimulus_vector))
         activation_map = self.neuron_layer.fireActivations()
         self.mind_state.activation_map = activation_map
         self.mind_state.stimulus_vector = stimulus_vector
