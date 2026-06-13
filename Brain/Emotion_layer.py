@@ -1,4 +1,4 @@
-from config.emotions import NEURON_EMOTION_MAPPING, EMOTION_INTENSITY_ZONES, REGULATIONS, COMPOUNDING_RULES
+from config.emotions import NEURON_EMOTION_MAPPING, EMOTION_INTENSITY_ZONES, REGULATIONS, COMPOUNDING_RULES, EMOTION_PROFILES, CLUSTER_RANGES, PENALTIES
 from Simulation.mind_state import MindState
 
 class EmotionLayer:
@@ -8,6 +8,7 @@ class EmotionLayer:
     RELEASE_STRENGTH = 0.10
     TREND_THRESHOLD = 0.05
     def __init__(self, mind_state:MindState):
+        self.FINAL_EMOTION_PROFILES = {}
         self.mind_state = mind_state
         self.compounds = {}
         self.trends = {}
@@ -31,29 +32,84 @@ class EmotionLayer:
             "anticipation":0.0,
             "surprise":0.0
         }
+    
+        for emotion, profile in EMOTION_PROFILES.items():
+            compiled_profile = {}
+            for cluster, label in profile.items():
+                compiled_profile[cluster] = CLUSTER_RANGES[cluster][label]
+            self.FINAL_EMOTION_PROFILES[emotion] = compiled_profile
 
-    def process_emotions(self):
-        activation_map = self.mind_state.activation_map
-        self.emotion_tanks = {
-            "fear":0.0,
-            "anger":0.0,
-            "joy":0.0,
-            "sadness":0.0,
-            "trust":0.0,
-            "disgust":0.0,
-            "anticipation":0.0,
-            "surprise":0.0
-        }
-        for cluster, intensity in activation_map.items():
-            mappings = NEURON_EMOTION_MAPPING[cluster]
-            for emotion, weight in mappings.items():
-                incoming = intensity*weight
-                current = self.emotion_tanks[emotion]
-                self.emotion_tanks[emotion] = min(current + incoming*(1-current), 1.0)
+
+    # def process_emotions(self):
+    #     activation_map = self.mind_state.activation_map
+    #     self.emotion_tanks = {
+    #         "fear":0.0,
+    #         "anger":0.0,
+    #         "joy":0.0,
+    #         "sadness":0.0,
+    #         "trust":0.0,
+    #         "disgust":0.0,
+    #         "anticipation":0.0,
+    #         "surprise":0.0
+    #     }
+    #     for cluster, intensity in activation_map.items():
+    #         mappings = NEURON_EMOTION_MAPPING[cluster]
+    #         for emotion, weight in mappings.items():
+    #             incoming = intensity*weight
+    #             current = self.emotion_tanks[emotion]
+    #             self.emotion_tanks[emotion] = min(current + incoming*(1-current), 1.0)
 
 ## MEMORY INFLUENCE PENDING
 
+    def membership(self, profile, value):
+        minimum, ideal, maximum = profile
+
+        ## RIGHT SHOULDER
+        if ideal == maximum:
+
+            if value < minimum:
+                return 0.0
+            elif value >= ideal:
+                return 1.0
+            else:
+                return (value - minimum) / (ideal - minimum)
+        
+        ## NORMAL TRIANGLES
+        if value < minimum or value > maximum:
+            return 0.0
+        
+        if value == ideal:
+            return 1.0
+        elif value < ideal:
+            return (value - minimum) / (ideal - minimum)
+        
+        return (maximum - value) / (maximum - ideal)
     
+    
+    def process_emotions(self):
+        activation_map = self.mind_state.activation_map
+        for emotion, strength in self.emotion_tanks.items():
+            count = 0
+            total_value = 0
+            total_penalties = 0
+            for cluster, data in self.FINAL_EMOTION_PROFILES[emotion].items():
+                profile = data
+                if(cluster in activation_map):
+                    count += 1
+                    value = activation_map[cluster]
+                    match_up = self.membership(profile=profile, value=value)
+                    total_value += match_up
+                else:
+                    label = EMOTION_PROFILES[emotion][cluster]
+                    penalty = PENALTIES[label]
+                    total_penalties += penalty
+            if count == 0:
+                target_value = 0
+            else:
+                target_value = max(0.0, min(1.0, (total_value / count) - total_penalties))
+            self.emotion_tanks[emotion] = target_value
+
+
     def update_inertia(self):
         current_base = self.mind_state.emotional_state["base"]
         for emotion, target_value in self.emotion_tanks.items():

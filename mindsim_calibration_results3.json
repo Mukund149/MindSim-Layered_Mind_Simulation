@@ -1,0 +1,240 @@
+[
+    {
+        "stimulus": "A man is pointing a gun at me",
+        "threat": 0.337932030359904,
+        "discomfort": 0.3926890691121419
+    },
+    {
+        "stimulus": "I might lose my job tomorrow",
+        "threat": 0.6007296244303385,
+        "novelty": 0.36853822072347003,
+        "urgency": 0.36692214012145996,
+        "social_relevance": 0.3579617738723755,
+        "discomfort": 0.36085955301920575,
+        "affinity": 0.4701526165008545
+    },
+    {
+        "stimulus": "Someone is following me in the dark",
+        "threat": 0.2755287488301595,
+        "novelty": 0.30942147970199585
+    },
+    {
+        "stimulus": "My medical test results came back abnormal",
+        "threat": 0.3954079945882161,
+        "novelty": 0.6313057740529379,
+        "social_relevance": 0.3718842665354411,
+        "discomfort": 0.47696924209594727
+    },
+    {
+        "stimulus": "I just got accepted into my dream university"
+    },
+    {
+        "stimulus": "My business idea got funded today",
+        "novelty": 0.2860655387242635
+    },
+    {
+        "stimulus": "I won the competition I trained months for",
+        "threat": 0.25929367542266846,
+        "reward": 0.528858502705892,
+        "novelty": 0.3101205825805664,
+        "discomfort": 0.42303959528605145
+    },
+    {
+        "stimulus": "My crush finally said yes",
+        "novelty": 0.25580819447835285
+    },
+    {
+        "stimulus": "I just discovered a completely new way to solve this",
+        "novelty": 0.346865177154541
+    },
+    {
+        "stimulus": "Something completely unexpected just happened",
+        "threat": 0.4466281731923421,
+        "reward": 0.4861296017964681,
+        "novelty": 1.0,
+        "familiarity": 0.6070815722147623,
+        "urgency": 0.4076239267985026,
+        "social_relevance": 0.392006794611613,
+        "discomfort": 0.48710580666859943
+    },
+    {
+        "stimulus": "I have never been in this situation before",
+        "threat": 0.44840343793233234,
+        "novelty": 0.6208088000615438,
+        "familiarity": 0.5411767959594727,
+        "urgency": 0.3950372139612834,
+        "social_relevance": 0.4757675329844157,
+        "discomfort": 0.38005836804707843,
+        "affinity": 0.5965902805328369
+    },
+    {
+        "stimulus": "Every morning I follow the same routine",
+        "novelty": 0.35701008637746173
+    },
+    {
+        "stimulus": "This is exactly what always happens",
+        "threat": 0.43965474764506024,
+        "novelty": 0.5933356682459513,
+        "familiarity": 0.6201809247334799,
+        "urgency": 0.4348483085632324,
+        "social_relevance": 0.38127676645914715,
+        "discomfort": 0.424393097559611
+    },
+    {
+        "stimulus": "I have been through this many times before",
+        "threat": 0.4123523235321045,
+        "novelty": 0.555260419845581,
+        "familiarity": 0.5631376902262369,
+        "urgency": 0.33318012952804565
+    },
+    {
+        "stimulus": "The deadline is in ten minutes",
+        "threat": 0.3433707555135091,
+        "reward": 0.4819335142771403,
+        "novelty": 0.2585383852322896,
+        "urgency": 0.499839186668396,
+        "social_relevance": 0.3686353365580241,
+        "discomfort": 0.46694056193033856
+    },
+    {
+        "stimulus": "I need to act right now or it will be too late",
+        "threat": 0.3220796187718709,
+        "novelty": 0.391554315884908,
+        "urgency": 0.7357927163441976,
+        "social_relevance": 0.3599212169647217
+    },
+    {
+        "stimulus": "There is no time left to prepare",
+        "threat": 0.5376887321472168,
+        "novelty": 0.5798828999201456,
+        "urgency": 0.6788148085276285,
+        "social_relevance": 0.3128219445546468,
+        "discomfort": 0.4643487532933553
+    },
+    {
+        "stimulus": "I have been suffering for days",
+        "threat": 0.44926361242930096,
+        "novelty": 0.4692705472310384,
+        "urgency": 0.3053239583969116,
+        "discomfort": 0.4796152512232463
+    },
+    {
+        "stimulus": "This situation is unbearable",
+        "threat": 0.5255499680836996,
+        "novelty": 0.5667481422424316,
+        "urgency": 0.5583635171254476,
+        "social_relevance": 0.5051350593566895,
+        "discomfort": 0.6717629432678223
+    },
+    {
+        "stimulus": "I am under enormous pressure right now",
+        "threat": 0.4474056164423625,
+        "novelty": 0.4165753523508708,
+        "urgency": 0.6117679278055826,
+        "social_relevance": 0.3956640561421712,
+        "discomfort": 0.5253543853759766,
+        "affinity": 0.4557633399963379
+    },
+    {
+        "stimulus": "Everyone is watching and judging me",
+        "threat": 0.3151476780573527,
+        "novelty": 0.37207531929016113,
+        "urgency": 0.38330050309499103,
+        "social_relevance": 0.6091150442759196,
+        "discomfort": 0.36980946858723956
+    },
+    {
+        "stimulus": "My reputation is at stake here",
+        "threat": 0.48845259348551434,
+        "novelty": 0.4024135271708171,
+        "urgency": 0.5383361975351969,
+        "social_relevance": 0.44191185633341473,
+        "discomfort": 0.4338913361231486,
+        "affinity": 0.493525226910909
+    },
+    {
+        "stimulus": "I need to impress these people"
+    },
+    {
+        "stimulus": "My best friend needs me right now",
+        "threat": 0.3075844446818034,
+        "reward": 0.4587727387746175,
+        "urgency": 0.3969431320826213,
+        "social_relevance": 0.332632581392924,
+        "affinity": 0.4797624746958415
+    },
+    {
+        "stimulus": "The person I love is in danger",
+        "threat": 0.7846336364746094,
+        "novelty": 0.4378526210784912,
+        "urgency": 0.6084840297698975,
+        "social_relevance": 0.5744892358779907,
+        "discomfort": 0.42629822095235187,
+        "affinity": 0.7590255737304688
+    },
+    {
+        "stimulus": "Someone I deeply care about is hurting",
+        "threat": 0.5489163001378378,
+        "novelty": 0.43010814984639484,
+        "urgency": 0.4468530019124349,
+        "social_relevance": 0.527292013168335,
+        "discomfort": 0.4378359317779541,
+        "affinity": 0.7869562307993571
+    },
+    {
+        "stimulus": "I failed my exam and disappointed my parents",
+        "threat": 0.39053869247436523,
+        "novelty": 0.5006148020426432,
+        "social_relevance": 0.30063794056574505,
+        "discomfort": 0.40212897459665936
+    },
+    {
+        "stimulus": "My best friend betrayed me in front of everyone",
+        "novelty": 0.3810138702392578,
+        "discomfort": 0.43598473072052
+    },
+    {
+        "stimulus": "I just got promoted but my colleague got fired",
+        "novelty": 0.3634858926137288,
+        "discomfort": 0.3220250606536865
+    },
+    {
+        "stimulus": "The building is on fire and my family is inside",
+        "threat": 0.47744162877400714,
+        "novelty": 0.37662915388743085,
+        "urgency": 0.5152340730031332,
+        "social_relevance": 0.3322479724884033
+    },
+    {
+        "stimulus": "A nuclear missile is heading toward my city",
+        "threat": 0.5238388379414877,
+        "novelty": 0.3173788785934448,
+        "urgency": 0.43921415011088055
+    },
+    {
+        "stimulus": "I suddenly become the richest person alive",
+        "threat": 0.3587229251861572,
+        "reward": 0.5395438273747762,
+        "novelty": 0.39069561163584393,
+        "urgency": 0.32588303089141846,
+        "social_relevance": 0.3537864287694295
+    },
+    {
+        "stimulus": "An alien civilization lands on Earth",
+        "novelty": 0.3400042454401652
+    },
+    {
+        "stimulus": "My entire family dies in an accident",
+        "threat": 0.37893784046173096,
+        "novelty": 0.5273800690968832,
+        "social_relevance": 0.3331693410873413,
+        "discomfort": 0.3097609082857768
+    },
+    {
+        "stimulus": "I become ruler of the world",
+        "threat": 0.25434863567352295,
+        "reward": 0.5278306007385254,
+        "novelty": 0.3059537410736084,
+        "urgency": 0.40189552307128906
+    }
+]

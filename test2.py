@@ -6,14 +6,59 @@ engine = SimulationEngine()
 
 engine.start()
 
-testings = ["I heard footsteps behind me in the dark and suddenly realized someone was following me", 
-            "Someone publicly humiliated me and I could not defend myself",
-            "Someone deliberately destroyed months of my hard work out of jealousy",
-            "A dangerous person cornered me and I knew I had to fight back immediately"
-    ]
+TEST_STIMULI = [
+    # THREAT scenarios
+    "A man is pointing a gun at me",
+    "I might lose my job tomorrow",
+    "Someone is following me in the dark",
+    "My medical test results came back abnormal",
+    
+    # REWARD scenarios
+    "I just got accepted into my dream university",
+    "My business idea got funded today",
+    "I won the competition I trained months for",
+    "My crush finally said yes",
+    
+    # NOVELTY scenarios
+    "I just discovered a completely new way to solve this",
+    "Something completely unexpected just happened",
+    "I have never been in this situation before",
+    
+    # FAMILIARITY scenarios
+    "Every morning I follow the same routine",
+    "This is exactly what always happens",
+    "I have been through this many times before",
+    
+    # URGENCY scenarios
+    "The deadline is in ten minutes",
+    "I need to act right now or it will be too late",
+    "There is no time left to prepare",
+    
+    # DISCOMFORT scenarios
+    "I have been suffering for days",
+    "This situation is unbearable",
+    "I am under enormous pressure right now",
+    
+    # SOCIAL scenarios
+    "Everyone is watching and judging me",
+    "My reputation is at stake here",
+    "I need to impress these people",
+    
+    # AFFINITY scenarios
+    "My best friend needs me right now",
+    "The person I love is in danger",
+    "Someone I deeply care about is hurting",
+    
+    # MIXED scenarios
+    "I failed my exam and disappointed my parents",
+    "My best friend betrayed me in front of everyone",
+    "I just got promoted but my colleague got fired",
+    "The building is on fire and my family is inside"
+]
 
 print("\nMindSim Runtime Started")
 print("Type 'exit' to stop the simulation.\n")
+
 
 try:
 
@@ -83,6 +128,11 @@ try:
 
         for emotion, data in engine.mind_state.activation_map.items():
             print(f"{emotion} : {data} : {engine.neuron_layer.clusters[emotion].last_fired}")
+        
+        print("\n Full Activation Map")
+
+        for emotion, weight in engine.neuron_layer.Full_activation_map.items():
+            print(f"{emotion} : {weight}")
         
         print("\nHebbian Synaptics")
 

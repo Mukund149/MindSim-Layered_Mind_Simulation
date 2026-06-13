@@ -1,0 +1,35 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Run current script and log",
+      "type": "shell",
+      "command": "cmd",
+      "args": [
+        "/c",
+        "python -u \"${file}\" > output.log 2>&1"
+      ],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Run workspace test2.py and log",
+      "type": "shell",
+      "command": "cmd",
+      "args": [
+        "/c",
+        "python -u \"${workspaceFolder}\\test2.py\" > output.log 2>&1"
+      ],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    }
+  ]
+}

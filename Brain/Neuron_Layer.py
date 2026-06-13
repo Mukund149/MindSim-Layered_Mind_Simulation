@@ -39,42 +39,50 @@ class NeuronLayer:
 
             "threat": NeuronCluster(
                 type="threat",
-                threshold= 0.30
+                threshold= 0.25,
+                decay_rate= 0.008
             ),
 
             "reward": NeuronCluster(
                 type="reward",
-                threshold=0.55
+                threshold=0.30,
+                decay_rate = 0.010
             ),
 
             "novelty" : NeuronCluster(
                 type="novelty",
-                threshold= 0.30
+                threshold= 0.25,
+                decay_rate= 0.025
             ),
 
             "familiarity" : NeuronCluster(
                 type="familiarity",
-                threshold= 0.60
+                threshold= 0.35,
+                decay_rate= 0.030
             ),
 
             "urgency" : NeuronCluster(
                 type="urgency",
-                threshold=0.45
+                threshold=0.30,
+                decay_rate= 0.010
             ),
 
             "social_relevance" : NeuronCluster(
                 type="social_relevance",
-                threshold= 0.35
+                threshold= 0.25,
+                decay_rate= 0.010
             ),
 
             "discomfort" : NeuronCluster(
                 type="discomfort",
-                threshold=0.40
+                threshold=0.30,
+                decay_rate= 0.008
             ),
 
             "affinity" : NeuronCluster(
                 type="affinity",
-                threshold=0.55
+                threshold=0.35,
+                decay_rate= 0.005
             )
         }
 
@@ -146,6 +154,9 @@ class NeuronLayer:
                     cluster.last_fired = datetime.now()
                     self.activation_map[cluster.type] = cluster.current_signal
         
+        for cluster in self.clusters.values():
+            self.Full_activation_map[cluster.type] = cluster.current_signal
+    
         return self.activation_map 
     
     def hebbian_strengthening(self):
