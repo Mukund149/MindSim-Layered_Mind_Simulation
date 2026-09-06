@@ -32,7 +32,7 @@ class MemoryLayer:
     MIN_DECAY_PARAMETER = 0.3
     MAX_DECAY_PARAMETER = 0.7
 
-    ACTIVE_EMOTION_THRESHOLD = 0.30
+    ACTIVE_EMOTION_THRESHOLD = 0.1
     COMPOUND_BONUS           = 0.08
     COMPLEXITY_CAP           = 0.20
 
@@ -50,8 +50,6 @@ class MemoryLayer:
     HIGH_BUCKET_VALUE   = 1.0
 
     EMOTION_CONTEXT_SIMILARITY_THRESHOLD = 0.85
-
-    SPREAD_ACTIVATION_BUDGET = 1.0
 
     TEMPORAL_HALF_LIFE = 30
     MINIMUM_TEMPORAL_LINK_STRENGTH = 0.1
@@ -71,9 +69,6 @@ class MemoryLayer:
         self.temporalDecayRate = math.log(2) / self.TEMPORAL_HALF_LIFE
 
         self.temporalWindowMinutes = math.log(1 / self.MINIMUM_TEMPORAL_LINK_STRENGTH) / self.temporalDecayRate
-
-       
-        self.activeChunks: Dict[str, datetime] = {}
 
         self.chromaClient = chromadb.HttpClient(host="localhost", port=8000)
 
@@ -305,34 +300,16 @@ class MemoryLayer:
         return candidates
 
 
-    def pruneActiveChunks(self, currentTime: datetime):
-        cutoff = currentTime - timedelta(minutes=self.temporalWindowMinutes)
-        self.activeChunks = {
-            memoryId: activatedAt
-            for memoryId, activatedAt in self.activeChunks.items()
-            if activatedAt >= cutoff
-        }
+    def calculateTemporalSpread(self, memory: Memory) -> float:
+        return sum(memory.temporalLinks.values())
 
 
-    def calculateTemporalSpread(self, memory: Memory, activeChunkIds: set, perSourceWeight: float) -> float:
-        return sum(
-            perSourceWeight * strength for neighborId, strength in memory.temporalLinks.items()
-            if neighborId in activeChunkIds
-        )
+    def calculateSemanticSpread(self, memory: Memory) -> float:
+        return sum(memory.semanticLinks.values())
 
 
-    def calculateSemanticSpread(self, memory: Memory, activeChunkIds: set, perSourceWeight: float) -> float:
-        return sum(
-            perSourceWeight * strength for neighborId, strength in memory.semanticLinks.items()
-            if neighborId in activeChunkIds
-        )
-
-
-    def calculateEmotionalSpread(self, memory: Memory, activeChunkIds: set, perSourceWeight: float) -> float:
-        return sum(
-            perSourceWeight * strength for neighborId, strength in memory.emotionalLinks.items()
-            if neighborId in activeChunkIds
-        )
+    def calculateEmotionalSpread(self, memory: Memory) -> float:
+        return sum(memory.emotionalLinks.values())
 
 
 
@@ -534,15 +511,6 @@ class MemoryLayer:
 
         merged = self.mergeCandidates(semanticCandidates, emotionalCandidates)
 
-        # snapshot BEFORE this round's own results exist — a candidate must never spread to/from
-        # something only just recalled in this same pass, only from genuinely prior activity
-        self.pruneActiveChunks(currentTime)
-        activeChunkIds = set(self.activeChunks.keys())
-
-        perSourceWeight = (
-            self.SPREAD_ACTIVATION_BUDGET / len(activeChunkIds) if activeChunkIds else 0.0
-        )
-
         successes = []
         for memoryId, candidate in merged.items():
             unifiedRelevance = self.calculateUnifiedRelevance(
@@ -551,9 +519,9 @@ class MemoryLayer:
 
             memory = candidate["memory"]
             bla = self.calculateBla(memory, currentTime)
-            spreadTemporal = self.calculateTemporalSpread(memory, activeChunkIds, perSourceWeight)
-            spreadSemantic = self.calculateSemanticSpread(memory, activeChunkIds, perSourceWeight)
-            spreadEmotional = self.calculateEmotionalSpread(memory, activeChunkIds, perSourceWeight)
+            spreadTemporal = self.calculateTemporalSpread(memory)
+            spreadSemantic = self.calculateSemanticSpread(memory)
+            spreadEmotional = self.calculateEmotionalSpread(memory)
 
             activation = self.calculateRetrievalActivation(
                 unifiedRelevance, bla, spreadTemporal, spreadSemantic, spreadEmotional
@@ -572,17 +540,13 @@ class MemoryLayer:
         recalledIds = {memory["id"] for memory in successes}
         associative = self.expandViaMemoryLinks(recalledIds, currentTime)
 
-        # this round's results become part of "what's active" for the NEXT retrieval's spread activation
-        for memoryId in recalledIds | {memory["id"] for memory in associative}:
-            self.activeChunks[memoryId] = currentTime
-
         result = {
             "recalled": successes,
             "associativelyActivated": associative,
         }
 
         self.mindState.working_memory = result
-        self.mindState.activation_map = {
+        self.mindState.memory_activation_map = {
             memory["id"]: memory["retrievalActivation"] for memory in successes
         }
 
@@ -590,9 +554,6 @@ class MemoryLayer:
 
 
     def expandViaMemoryLinks(self, recalledIds: set, currentTime: datetime) -> List[dict]:
-        # one hop only, from whichever memories actually made the final pool — never from a rejected candidate,
-        # and never cascading further out from whatever gets pulled in here. Reads each source's permanently
-        # stored links directly instead of recomputing anything live.
         linkedVia: Dict[str, List[dict]] = {}
 
         for sourceId in recalledIds:
@@ -606,7 +567,7 @@ class MemoryLayer:
             ]:
                 for neighborId, strength in neighbors.items():
                     if neighborId in recalledIds:
-                        continue   # already earned its own way in — don't also list it as a free-riding neighbor
+                        continue   
                     linkedVia.setdefault(neighborId, []).append(
                         {"sourceMemoryId": sourceId, "linkType": linkType, "strength": strength}
                     )
@@ -616,7 +577,6 @@ class MemoryLayer:
             metadata = self.fetchMemoryById(neighborId)
             memory = self.memoryFromMetadata(neighborId, metadata)
 
-            # rode in via association, but it still genuinely came to mind — counts as a real recall
             memory.recallHistory.append(currentTime)
             self.persistRecall(memory)
 
